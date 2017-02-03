@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Hello
 {
@@ -6,23 +7,57 @@ namespace Hello
     {
         static void Main(string[] args)
         {
-            GradeBook book = new GradeBook();
+            GradeBook book = CreateGradeBook();
+
             book.NameChanged += OnNameChanged;
-            book.Name = "Paul's Grade Book";
-            book.AddGrade(91);
-            book.AddGrade(89.5f);
-            book.AddGrade(75);
 
-            book.WriteGrades(Console.Out);
+            GetBookName(book);
+            AddGrades(book);
+            SaveGrades(book);
+            WriteResults(book);
 
+        }
+
+        private static GradeBook CreateGradeBook()
+        {
+            return new ThrowAwayGradebook();
+        }
+
+        private static void WriteResults(GradeBook book)
+        {
             GradeStatistics stats = book.ComputeStatistics();
-            Console.WriteLine(book.Name);
-            WriteResult("Grade", stats.LetterGrade);
-            WriteResult("Performance", stats.LetterDescription);
+            WriteResult(stats.LetterDescription, stats.LetterGrade);
             WriteResult("Average Grade", stats.AverageGrade);
             WriteResult("High Grade", stats.MaximumGrade);
             WriteResult("Low Grade", stats.MinimumGrade);
+        }
 
+        private static void SaveGrades(GradeBook book)
+        {
+            using (StreamWriter outputFile = File.CreateText("grades.txt"))
+            {
+                book.WriteGrades(outputFile);
+            }
+        }
+
+        private static void AddGrades(GradeBook book)
+        {
+            book.AddGrade(91);
+            book.AddGrade(89.5f);
+            book.AddGrade(75);
+        }
+
+        private static void GetBookName(GradeBook book)
+        {
+            try
+            {
+                Console.WriteLine("Enter a name:");
+                book.Name = Console.ReadLine();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         static void WriteResult(string description, float result)
