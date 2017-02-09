@@ -7,7 +7,7 @@ namespace Hello
     {
         static void Main(string[] args)
         {
-            GradeBook book = CreateGradeBook();
+            GradeTracker book = CreateGradeBook();
 
             book.NameChanged += OnNameChanged;
 
@@ -18,12 +18,12 @@ namespace Hello
 
         }
 
-        private static GradeBook CreateGradeBook()
+        private static GradeTracker CreateGradeBook()
         {
             return new ThrowAwayGradebook();
         }
 
-        private static void WriteResults(GradeBook book)
+        private static void WriteResults(GradeTracker book)
         {
             GradeStatistics stats = book.ComputeStatistics();
             WriteResult(stats.LetterDescription, stats.LetterGrade);
@@ -32,7 +32,7 @@ namespace Hello
             WriteResult("Low Grade", stats.MinimumGrade);
         }
 
-        private static void SaveGrades(GradeBook book)
+        private static void SaveGrades(GradeTracker book)
         {
             using (StreamWriter outputFile = File.CreateText("grades.txt"))
             {
@@ -40,14 +40,14 @@ namespace Hello
             }
         }
 
-        private static void AddGrades(GradeBook book)
+        private static void AddGrades(GradeTracker book)
         {
             book.AddGrade(91);
             book.AddGrade(89.5f);
             book.AddGrade(75);
         }
 
-        private static void GetBookName(GradeBook book)
+        private static void GetBookName(GradeTracker book)
         {
             try
             {
